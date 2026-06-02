@@ -1,58 +1,83 @@
 """
-Phase 6.2: Evaluate Robustness — 4-Way Test
-Menguji 2 model (Baseline & Augmented) pada 2 kondisi (Normal & Low-Light).
-Semua dijalankan secara otomatis dan hasilnya disimpan ke CSV.
+Evaluate leakage-free robustness on WIDER test, synthetic WIDER test_lowlight,
+and optional Dark Face test.
 """
-import os
-import yaml
+from __future__ import annotations
+
 import csv
+from pathlib import Path
+import tempfile
+
+import yaml
 from ultralytics import YOLO
 
+from audit_dataset import run_full_audit
+from project_config import (
+    AUGMENTED_WEIGHTS,
+    BASELINE_WEIGHTS,
+    DARK_CLEAN_DIR,
+    EVAL_RESULTS_DIR,
+    WIDER_AUG_DIR,
+    WIDER_CLEAN_DIR,
+)
 
-# ==================== KONFIGURASI ====================
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATASET_DIR = os.path.join(BASE_DIR, "datasets", "skripshit_yolo")
 
-BASELINE_WEIGHTS = os.path.join(BASE_DIR, "runs", "detect", "yolov8_baseline_final", "weights", "best.pt")
-AUGMENTED_WEIGHTS = os.path.join(BASE_DIR, "runs", "detect", "runs", "detect", "yolov8_augmented", "weights", "best.pt")
+def split_entry(dataset_root: Path, split_name: str) -> str:
+    manifest = dataset_root / f"{split_name}.txt"
+    if manifest.exists():
+        return manifest.name
 
-OUTPUT_DIR = os.path.join(BASE_DIR, "evaluation_results")
-# =====================================================
+    image_dir = dataset_root / "images" / split_name
+    if image_dir.exists():
+        return f"images/{split_name}"
+
+    raise FileNotFoundError(f"Split entry tidak ditemukan: {dataset_root}:{split_name}")
 
 
-def create_eval_yaml(val_folder_name, yaml_name):
-    """Buat file YAML sementara yang mengarah ke folder val tertentu."""
-    yaml_path = os.path.join(BASE_DIR, yaml_name)
+def create_eval_yaml(dataset_root: Path, split_name: str) -> Path:
+    try:
+        train_entry = split_entry(dataset_root, "train")
+    except FileNotFoundError:
+        train_entry = split_entry(dataset_root, split_name)
+
     data = {
-        "path": os.path.abspath(DATASET_DIR),
-        "train": "images/train",
-        "val": f"images/{val_folder_name}",
-        "names": {0: "face"}
+        "path": str(dataset_root.resolve()),
+        "train": train_entry,
+        "val": split_entry(dataset_root, split_name),
+        "names": {0: "face"},
     }
-    with open(yaml_path, "w") as f:
-        yaml.dump(data, f, default_flow_style=False)
-    return yaml_path
 
-
-def run_evaluation(weights_path, yaml_path, test_name):
-    """Jalankan evaluasi model dan return metrik."""
-    print(f"\n{'='*60}")
-    print(f"  TEST: {test_name}")
-    print(f"  Weights: {os.path.basename(os.path.dirname(os.path.dirname(weights_path)))}")
-    print(f"  Val set: {yaml_path}")
-    print(f"{'='*60}\n")
-
-    model = YOLO(weights_path)
-    results = model.val(
-        data=yaml_path,
-        imgsz=640,
-        batch=16,
-        device=0,
-        plots=True,
-        save_json=False,
-        project=OUTPUT_DIR,
-        name=test_name,
+    handle = tempfile.NamedTemporaryFile(
+        mode="w",
+        suffix=f"_{dataset_root.name}_{split_name}.yaml",
+        delete=False,
+        encoding="utf-8",
     )
+    yaml.dump(data, handle, default_flow_style=False)
+    handle.close()
+    return Path(handle.name)
+
+
+def run_evaluation(weights_path: Path, dataset_root: Path, split_name: str, test_name: str):
+    print(
+        f"\nEvaluating: {test_name} | "
+        f"weights={weights_path.parent.parent.name} | dataset={dataset_root.name}:{split_name}"
+    )
+    yaml_path = create_eval_yaml(dataset_root, split_name)
+    try:
+        model = YOLO(str(weights_path))
+        results = model.val(
+            data=str(yaml_path),
+            imgsz=640,
+            batch=16,
+            device=0,
+            plots=True,
+            save_json=False,
+            project=str(EVAL_RESULTS_DIR),
+            name=test_name,
+        )
+    finally:
+        yaml_path.unlink(missing_ok=True)
 
     metrics = {
         "test_name": test_name,
@@ -61,92 +86,87 @@ def run_evaluation(weights_path, yaml_path, test_name):
         "mAP50": round(results.box.map50, 5),
         "mAP50-95": round(results.box.map, 5),
     }
-
-    print(f"\n--- Hasil {test_name} ---")
-    for k, v in metrics.items():
-        if k != "test_name":
-            print(f"  {k}: {v}")
-
+    print(
+        "Results "
+        + test_name
+        + " - "
+        + " | ".join(f"{key}: {value}" for key, value in metrics.items() if key != "test_name")
+    )
     return metrics
 
 
 def print_comparison_table(all_results):
-    """Cetak tabel perbandingan akhir."""
-    print(f"\n{'='*70}")
-    print(f"  HASIL EVALUASI ROBUSTNESS — PERBANDINGAN LENGKAP")
-    print(f"{'='*70}")
-    print(f"{'Test':<30} {'Precision':>10} {'Recall':>10} {'mAP50':>10} {'mAP50-95':>10}")
-    print(f"{'-'*70}")
-    for r in all_results:
-        print(f"{r['test_name']:<30} {r['precision']:>10.4f} {r['recall']:>10.4f} {r['mAP50']:>10.4f} {r['mAP50-95']:>10.4f}")
-    print(f"{'-'*70}")
+    print("\n[Comparison Summary]")
+    for result in all_results:
+        print(
+            f"{result['test_name']:<24}: "
+            f"mAP50={result['mAP50']:.4f}, mAP50-95={result['mAP50-95']:.4f}"
+        )
 
-    # Hitung robustness drop
     baseline_normal = next(r for r in all_results if r["test_name"] == "baseline_normal")
     baseline_lowlight = next(r for r in all_results if r["test_name"] == "baseline_lowlight")
     augmented_normal = next(r for r in all_results if r["test_name"] == "augmented_normal")
     augmented_lowlight = next(r for r in all_results if r["test_name"] == "augmented_lowlight")
 
-    drop_baseline = (baseline_normal["mAP50"] - baseline_lowlight["mAP50"]) / baseline_normal["mAP50"] * 100
-    drop_augmented = (augmented_normal["mAP50"] - augmented_lowlight["mAP50"]) / augmented_normal["mAP50"] * 100
+    drop_baseline = (
+        (baseline_normal["mAP50"] - baseline_lowlight["mAP50"])
+        / baseline_normal["mAP50"]
+        * 100
+    )
+    drop_augmented = (
+        (augmented_normal["mAP50"] - augmented_lowlight["mAP50"])
+        / augmented_normal["mAP50"]
+        * 100
+    )
 
-    print(f"\n📊 ANALISIS ROBUSTNESS (mAP50):")
-    print(f"  Baseline  : Normal {baseline_normal['mAP50']:.4f} → Low-Light {baseline_lowlight['mAP50']:.4f} | Drop: {drop_baseline:.2f}%")
-    print(f"  Augmented : Normal {augmented_normal['mAP50']:.4f} → Low-Light {augmented_lowlight['mAP50']:.4f} | Drop: {drop_augmented:.2f}%")
-    print(f"\n  🔑 Improvement: Augmented drop {drop_augmented:.2f}% vs Baseline drop {drop_baseline:.2f}%")
-
-    if drop_augmented < drop_baseline:
-        print(f"  ✅ Model Augmented LEBIH ROBUST ({drop_baseline - drop_augmented:.2f}% lebih tahan)")
-    else:
-        print(f"  ⚠️  Model Augmented tidak lebih robust dari baseline")
-
+    print(f"Robustness Drop | Baseline: {drop_baseline:.2f}% | Augmented: {drop_augmented:.2f}%")
     return {
         "drop_baseline": drop_baseline,
         "drop_augmented": drop_augmented,
     }
 
 
-def save_results_csv(all_results, drops):
-    """Simpan hasil ke CSV."""
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    csv_path = os.path.join(OUTPUT_DIR, "robustness_results.csv")
-    with open(csv_path, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["test_name", "precision", "recall", "mAP50", "mAP50-95"])
+def save_results_csv(all_results):
+    EVAL_RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    csv_path = EVAL_RESULTS_DIR / "robustness_results.csv"
+    with csv_path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=["test_name", "precision", "recall", "mAP50", "mAP50-95"],
+        )
         writer.writeheader()
         writer.writerows(all_results)
-    print(f"\n📁 Hasil disimpan ke: {csv_path}")
+    print(f"Saved to: {csv_path}")
 
 
 def main():
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    require_darkface = DARK_CLEAN_DIR.exists()
+    run_full_audit(require_darkface=require_darkface)
+    EVAL_RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Cek weights
-    for name, path in [("Baseline", BASELINE_WEIGHTS), ("Augmented", AUGMENTED_WEIGHTS)]:
-        if not os.path.exists(path):
-            print(f"❌ {name} weights tidak ditemukan: {path}")
-            return
-        print(f"✅ {name} weights: {path}")
+    for name, path in (("Baseline", BASELINE_WEIGHTS), ("Augmented", AUGMENTED_WEIGHTS)):
+        if not path.exists():
+            raise FileNotFoundError(f"{name} weights not found at {path}")
+        print(f"{name} weights: {path}")
 
-    # Buat YAML untuk kedua val set
-    yaml_normal = create_eval_yaml("val", "eval_normal.yaml")
-    yaml_lowlight = create_eval_yaml("val_lowlight", "eval_lowlight.yaml")
+    all_results = [
+        run_evaluation(BASELINE_WEIGHTS, WIDER_CLEAN_DIR, "test", "baseline_normal"),
+        run_evaluation(BASELINE_WEIGHTS, WIDER_CLEAN_DIR, "test_lowlight", "baseline_lowlight"),
+        run_evaluation(AUGMENTED_WEIGHTS, WIDER_AUG_DIR, "test", "augmented_normal"),
+        run_evaluation(AUGMENTED_WEIGHTS, WIDER_AUG_DIR, "test_lowlight", "augmented_lowlight"),
+    ]
 
-    # Jalankan 4 test
-    all_results = []
-    all_results.append(run_evaluation(BASELINE_WEIGHTS, yaml_normal, "baseline_normal"))
-    all_results.append(run_evaluation(BASELINE_WEIGHTS, yaml_lowlight, "baseline_lowlight"))
-    all_results.append(run_evaluation(AUGMENTED_WEIGHTS, yaml_normal, "augmented_normal"))
-    all_results.append(run_evaluation(AUGMENTED_WEIGHTS, yaml_lowlight, "augmented_lowlight"))
+    if require_darkface:
+        all_results.append(
+            run_evaluation(BASELINE_WEIGHTS, DARK_CLEAN_DIR, "test", "baseline_darkface")
+        )
+        all_results.append(
+            run_evaluation(AUGMENTED_WEIGHTS, DARK_CLEAN_DIR, "test", "augmented_darkface")
+        )
 
-    # Perbandingan
-    drops = print_comparison_table(all_results)
-    save_results_csv(all_results, drops)
-
-    # Cleanup YAML sementara
-    os.remove(yaml_normal)
-    os.remove(yaml_lowlight)
-
-    print("\n🎉 Evaluasi selesai!")
+    print_comparison_table(all_results)
+    save_results_csv(all_results)
+    print("\nEvaluation completed.")
 
 
 if __name__ == "__main__":

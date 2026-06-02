@@ -1,7 +1,5 @@
 """
-Phase 6.3: Visual Comparison — Side-by-Side Detection
-Menampilkan perbandingan deteksi Baseline vs Augmented pada gambar low-light.
-Output: Grid gambar perbandingan yang disimpan ke folder evaluation_results/.
+Visual Comparison: Side-by-Side Detection.
 """
 import os
 import cv2
@@ -174,9 +172,7 @@ def main():
             all_stats.append(stats)
 
     # Summary
-    print(f"\n{'='*50}")
-    print(f"  VISUAL COMPARISON SUMMARY")
-    print(f"{'='*50}")
+    print("\n[Visual Comparison Summary]")
     total_gt = sum(s["gt"] for s in all_stats)
     total_baseline = sum(s["baseline"] for s in all_stats)
     total_augmented = sum(s["augmented"] for s in all_stats)
@@ -209,7 +205,7 @@ def main():
         cv2.imwrite(os.path.join(OUTPUT_DIR, "OVERVIEW_GRID.jpg"), grid)
         print(f"  Overview grid saved: OVERVIEW_GRID.jpg")
 
-    print("\n🎉 Visual comparison selesai!")
+    print("\nVisual comparison completed.")
 
 
 if __name__ == "__main__":

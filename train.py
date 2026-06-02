@@ -2,16 +2,7 @@ import os
 from ultralytics import YOLO
 
 def train_model(data_yaml_path, epochs=50, img_size=640, model_variant='yolov8n.pt'):
-    """
-    Fungsi untuk menjalankan training YOLOv8.
-    
-    Args:
-        data_yaml_path (str): Path ke file data.yaml
-        epochs (int): Jumlah iterasi training
-        img_size (int): Resolusi citra masukan
-        model_variant (str): Nama model pretrained (yolov8n.pt, yolov8s.pt, dll)
-    """
-    print(f"--- Memulai Training Skenario: {model_variant} ---")
+    print(f"Starting training with {model_variant}")
     
     # Load model
     model = YOLO(model_variant)
@@ -27,7 +18,7 @@ def train_model(data_yaml_path, epochs=50, img_size=640, model_variant='yolov8n.
         name='baseline_training' # Nama subfolder hasil
     )
     
-    print("--- Training Selesai ---")
+    print("Training finished.")
     return results
 
 if __name__ == "__main__":
@@ -38,4 +29,4 @@ if __name__ == "__main__":
     if os.path.exists(DATA_PATH):
         train_model(DATA_PATH)
     else:
-        print(f"Error: File {DATA_PATH} tidak ditemukan. Silakan siapkan dataset terlebih dahulu.")
+        print(f"Error: {DATA_PATH} not found.")

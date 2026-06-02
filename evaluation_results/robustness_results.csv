@@ -1,5 +1,0 @@
-test_name,precision,recall,mAP50,mAP50-95
-baseline_normal,0.91328,0.83204,0.90304,0.61287
-baseline_lowlight,0.89083,0.62202,0.70468,0.43389
-augmented_normal,0.91126,0.78564,0.8682,0.57256
-augmented_lowlight,0.89179,0.7151,0.79095,0.51445

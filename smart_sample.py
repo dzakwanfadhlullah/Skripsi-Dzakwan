@@ -5,12 +5,7 @@ import math
 
 def smart_sample(source_dir, target_dir, max_size_gb=2.5):
     """
-    Mengambil sampel data dari source_dir ke target_dir dengan batas ukuran tertentu.
-    
-    Args:
-        source_dir (str): Folder dataset utuh (di /content/)
-        target_dir (str): Folder tujuan (di Google Drive)
-        max_size_gb (float): Batas ukuran dalam GB
+    Sampling data membatasi size (GB).
     """
     if not os.path.exists(source_dir):
         print(f"Error: Source {source_dir} tidak ditemukan.")
@@ -35,7 +30,7 @@ def smart_sample(source_dir, target_dir, max_size_gb=2.5):
     max_size_bytes = max_size_gb * 1024 * 1024 * 1024
     count = 0
     
-    print(f"Memulai sampling... Target: {max_size_gb} GB")
+    print(f"Sampling... Target: {max_size_gb}GB")
     
     for img_path in all_files:
         file_size = os.path.getsize(img_path)
@@ -58,9 +53,7 @@ def smart_sample(source_dir, target_dir, max_size_gb=2.5):
         
         # Strategi 2: Cari di seluruh source_dir jika tidak ada di tempat (untuk dataset yang pisah folder labels)
         if not os.path.exists(label_path):
-            # Optimasi: Kita cari sekali saja lokasi folder labels nya
-            img_filename = os.path.basename(img_path).rsplit('.', 1)[0]
-            # (Penjelasan: Logic ini akan di-implementasikan lebih efisien di script rescue)
+            # search logic here
             pass
             
         if os.path.exists(label_path):
@@ -73,9 +66,7 @@ def smart_sample(source_dir, target_dir, max_size_gb=2.5):
         if count % 500 == 0:
             print(f"Sudah memproses {count} gambar... ({current_size_bytes / (1024**3):.2f} GB)")
 
-    print(f"\nSelesai! Berhasil memindahkan {count} gambar.")
-    print(f"Total ukuran: {current_size_bytes / (1024**3):.2f} GB")
-    print(f"Lokasi: {target_dir}")
+    print(f"Selesai! {count} files ({current_size_bytes / (1024**3):.2f} GB) disalin ke {target_dir}")
 
 if __name__ == "__main__":
     # Contoh penggunaan (Akan disesuaikan di Colab)

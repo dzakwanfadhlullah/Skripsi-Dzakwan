@@ -1,7 +1,5 @@
 """
-Live Camera Demo: Baseline vs Augmented YOLOv8 Face Detection
-Menampilkan deteksi wajah real-time dari webcam.
-Tekan 'Q' untuk keluar, 'S' untuk screenshot, 'L' untuk toggle low-light simulation.
+Live Camera Demo: Baseline vs Augmented
 """
 import os
 import cv2
@@ -9,11 +7,11 @@ import numpy as np
 import time
 from ultralytics import YOLO
 
+from project_config import AUGMENTED_WEIGHTS, BASELINE_WEIGHTS
+
 
 # ==================== KONFIGURASI ====================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-BASELINE_WEIGHTS = os.path.join(BASE_DIR, "runs", "detect", "yolov8_baseline_final", "weights", "best.pt")
-AUGMENTED_WEIGHTS = os.path.join(BASE_DIR, "runs", "detect", "runs", "detect", "yolov8_augmented", "weights", "best.pt")
 
 CONF_THRESHOLD = 0.25
 CAMERA_ID = 0           # 0 = webcam utama
@@ -66,28 +64,29 @@ def draw_info_bar(img, text, color, count, fps=None):
 
 
 def main():
-    print("=" * 50)
-    print("  🎥 LIVE CAMERA DEMO")
-    print("  Baseline vs Augmented YOLOv8")
-    print("=" * 50)
-    print("\n  Controls:")
-    print("    Q     = Quit")
-    print("    S     = Screenshot")
-    print("    L     = Toggle low-light simulation")
-    print("    +/-   = Adjust confidence threshold")
-    print()
+    print("Starting Live Camera Demo...")
+    print("Controls: [Q] Quit | [S] Screenshot | [L] Toggle Low-Light | [+/-] Threshold\n")
+    print(f"Baseline weights : {BASELINE_WEIGHTS}")
+    print(f"Augmented weights: {AUGMENTED_WEIGHTS}\n")
+
+    if not BASELINE_WEIGHTS.exists():
+        print(f"Error: baseline weights not found: {BASELINE_WEIGHTS}")
+        return
+    if not AUGMENTED_WEIGHTS.exists():
+        print(f"Error: augmented weights not found: {AUGMENTED_WEIGHTS}")
+        return
 
     # Load models
     print("Loading Baseline model...")
-    baseline = YOLO(BASELINE_WEIGHTS)
+    baseline = YOLO(str(BASELINE_WEIGHTS))
     print("Loading Augmented model...")
-    augmented = YOLO(AUGMENTED_WEIGHTS)
-    print("✅ Models loaded!\n")
+    augmented = YOLO(str(AUGMENTED_WEIGHTS))
+    print("Models loaded.\n")
 
     # Open camera
-    cap = cv2.VideoCapture(CAMERA_ID)
+    cap = cv2.VideoCapture(CAMERA_ID, cv2.CAP_DSHOW)
     if not cap.isOpened():
-        print("❌ Tidak bisa membuka kamera!")
+        print("Error: Could not open camera.")
         return
 
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
@@ -99,7 +98,7 @@ def main():
     screenshot_dir = os.path.join(BASE_DIR, "evaluation_results", "camera_screenshots")
     os.makedirs(screenshot_dir, exist_ok=True)
 
-    print("🎥 Camera started! Press Q to quit.\n")
+    print("Camera started.\n")
 
     while True:
         t_start = time.time()
@@ -153,21 +152,21 @@ def main():
             fname = f"screenshot_{screenshot_count:03d}.jpg"
             path = os.path.join(screenshot_dir, fname)
             cv2.imwrite(path, combined)
-            print(f"  📸 Screenshot saved: {path}")
+            print(f"Screenshot saved: {path}")
         elif key == ord('l') or key == ord('L'):
             low_light_mode = not low_light_mode
-            status = "ON 🌙" if low_light_mode else "OFF ☀️"
-            print(f"  💡 Low-light simulation: {status}")
+            status = "ON" if low_light_mode else "OFF"
+            print(f"Low-light simulation: {status}")
         elif key == ord('+') or key == ord('='):
             conf = min(0.9, conf + 0.05)
-            print(f"  🔧 Confidence threshold: {conf:.2f}")
+            print(f"Conf threshold: {conf:.2f}")
         elif key == ord('-') or key == ord('_'):
             conf = max(0.05, conf - 0.05)
-            print(f"  🔧 Confidence threshold: {conf:.2f}")
+            print(f"Conf threshold: {conf:.2f}")
 
     cap.release()
     cv2.destroyAllWindows()
-    print("\n👋 Camera demo closed.")
+    print("\nCamera demo closed.")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,7 @@
+path: datasets/experiment/wider_face_augmented
+train: train.txt
+val: val.txt
+test: test.txt
+
+names:
+  0: face

@@ -22,29 +22,60 @@ datasets/
 # --- Training Runs / Output Model ---
 runs/
 
-# --- Evaluation output YOLO (subdirectories besar) ---
-evaluation_results/baseline_normal/
-evaluation_results/baseline_lowlight/
-evaluation_results/augmented_normal/
-evaluation_results/augmented_lowlight/
-evaluation_results/visual_comparison/
-evaluation_results/camera_screenshots/
+# --- ALL evaluation output ---
+evaluation_results/
 
 # --- Temp files ---
 .tmp.drivedownload/
 .tmp.driveupload/
 *.tmp
 
-# --- PDF Skripsi ---
+# --- PDF & Document files ---
 *.pdf
+*.docx
 
 # --- OS files ---
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# --- IDE ---
+# --- IDE / Editor ---
 .vscode/
 .idea/
 *.swp
 *.swo
+
+# --- AI / Gemini tool folders ---
+.gemini/
+
+# --- Markdown files (AI-generated drafts & analysis) ---
+*.md
+
+# --- Skripsi draft folder (contains drafts, chat logs, etc.) ---
+Skripsi/
+
+# --- Drawio diagrams ---
+*.drawio
+
+# --- Large lampiran images ---
+*.png
+
+# --- Old/new version experiment folders ---
+version_old/
+version_new/
+
+# --- Darkface audit preview images ---
+darkface_audit_preview/
+
+# --- Pyright config ---
+pyrightconfig.json
+
+# --- Auto-generated text artifacts ---
+implementation.txt
+dataset.txt
+lampiran_*.txt
+
+# --- Generator/report scripts (auto-generated look) ---
+generate_lampiran2.py
+generate_lampiran4.py
+generate_report.py

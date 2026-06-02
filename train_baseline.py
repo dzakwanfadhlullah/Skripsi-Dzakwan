@@ -1,29 +1,33 @@
 from ultralytics import YOLO
-import os
+
+from audit_dataset import audit_clean_dataset
+from project_config import (
+    BASELINE_DATA_YAML,
+    BASELINE_RUN_NAME,
+    COMMON_TRAIN_ARGS,
+    DEFAULT_MODEL_VARIANT,
+    WIDER_CLEAN_DIR,
+)
+
 
 def train_baseline():
-    """
-    Melatih model YOLOv8 baseline menggunakan data normal.
-    """
-    # 1. Load model pretrained (YOLOv8 Nano - ringan dan cepat untuk skripsi)
-    model = YOLO("yolov8n.pt") 
+    audit_clean_dataset(WIDER_CLEAN_DIR, "wider_face", require_test_lowlight=False)
 
-    # 2. Mulai Training
-    print("\n--- Memulai Training Baseline (Skenario 1) ---")
-    results = model.train(
-        data="skripshit_data.yaml", 
-        epochs=50,                  # Standar training yang baik untuk Baseline
-        imgsz=640, 
-        batch=16, 
-        name="yolov8_baseline",
-        device=0,
-        save=True,                  # Simpan weight terbaik
-        project="runs/detect"       # Lokasi output
+    model = YOLO(DEFAULT_MODEL_VARIANT)
+    print("Starting baseline training...")
+
+    train_args = dict(COMMON_TRAIN_ARGS)
+    train_args.update(
+        {
+            "data": str(BASELINE_DATA_YAML),
+            "name": BASELINE_RUN_NAME,
+        }
     )
-    
-    print("\nTraining Selesai!")
-    print(f"Weights terbaik disimpan di: {os.path.abspath('runs/detect/yolov8_baseline/weights/best.pt')}")
+    results = model.train(**train_args)
+
+    print(f"Done. Best weights: runs/detect/{BASELINE_RUN_NAME}/weights/best.pt")
+    return results
+
 
 if __name__ == "__main__":
-    # train_baseline()
-    pass
+    train_baseline()

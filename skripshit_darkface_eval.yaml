@@ -1,0 +1,7 @@
+path: datasets/experiment/dark_face_clean
+train: test.txt
+val: test.txt
+test: test.txt
+
+names:
+  0: face
