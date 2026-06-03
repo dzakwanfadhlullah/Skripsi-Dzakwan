@@ -1,5 +1,5 @@
 # ==========================================
-# .gitignore — Skripshit YOLOv8 Project
+# .gitignore — Skripsi YOLOv8 Project
 # ==========================================
 
 # --- Python ---
@@ -45,13 +45,13 @@ desktop.ini
 *.swp
 *.swo
 
-# --- AI / Gemini tool folders ---
+# --- a  ---
 .gemini/
 
-# --- Markdown files (AI-generated drafts & analysis) ---
+# --- Md ---
 *.md
 
-# --- Skripsi draft folder (contains drafts, chat logs, etc.) ---
+# --- S ---
 Skripsi/
 
 # --- Drawio diagrams ---
@@ -70,12 +70,12 @@ darkface_audit_preview/
 # --- Pyright config ---
 pyrightconfig.json
 
-# --- Auto-generated text artifacts ---
+# --- Autos ---
 implementation.txt
 dataset.txt
 lampiran_*.txt
 
-# --- Generator/report scripts (auto-generated look) ---
+# --- Gen ---
 generate_lampiran2.py
 generate_lampiran4.py
 generate_report.py
