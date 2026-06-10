@@ -1,5 +1,4 @@
-
-path: ../datasets/skripshit_yolo
+path: ../datasets/skripsi_yolo
 train: images/train
 val: images/val
 

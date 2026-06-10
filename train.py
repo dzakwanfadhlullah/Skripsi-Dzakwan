@@ -14,7 +14,7 @@ def train_model(data_yaml_path, epochs=50, img_size=640, model_variant='yolov8n.
         epochs=epochs,
         imgsz=img_size,
         device=0, # Menggunakan GPU pertama
-        project='skripshit_research', # Nama project di wandb/folder
+        project='skripsi_research', # Nama project di wandb/folder
         name='baseline_training' # Nama subfolder hasil
     )
     
@@ -23,7 +23,7 @@ def train_model(data_yaml_path, epochs=50, img_size=640, model_variant='yolov8n.
 
 if __name__ == "__main__":
     # Path ini harus disesuaikan dengan lokasi di Google Drive/Colab nanti
-    # Contoh: '/content/drive/MyDrive/skripshit/datasets/data.yaml'
+    # Contoh: '/content/drive/MyDrive/skripsi/datasets/data.yaml'
     DATA_PATH = 'datasets/data.yaml' 
     
     if os.path.exists(DATA_PATH):

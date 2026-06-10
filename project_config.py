@@ -25,9 +25,9 @@ DARK_CLEAN_DIR = EXPERIMENT_DATASETS_DIR / "dark_face_clean"
 RUNS_DIR = ROOT_DIR / "runs" / "detect"
 EVAL_RESULTS_DIR = ROOT_DIR / "evaluation_results"
 
-BASELINE_DATA_YAML = ROOT_DIR / "skripshit_wider_baseline.yaml"
-AUGMENTED_DATA_YAML = ROOT_DIR / "skripshit_wider_augmented.yaml"
-DARKFACE_DATA_YAML = ROOT_DIR / "skripshit_darkface_eval.yaml"
+BASELINE_DATA_YAML = ROOT_DIR / "wider_face_baseline.yaml"
+AUGMENTED_DATA_YAML = ROOT_DIR / "wider_face_augmented.yaml"
+DARKFACE_DATA_YAML = ROOT_DIR / "darkface_eval.yaml"
 
 DEFAULT_MODEL_VARIANT = "yolov8n.pt"
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png"}

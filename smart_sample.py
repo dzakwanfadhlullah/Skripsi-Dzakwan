@@ -70,5 +70,5 @@ def smart_sample(source_dir, target_dir, max_size_gb=2.5):
 
 if __name__ == "__main__":
     # Contoh penggunaan (Akan disesuaikan di Colab)
-    # smart_sample("/content/raw_data", "/content/drive/MyDrive/skripshit/datasets/sampled_data")
+    # smart_sample("/content/raw_data", "/content/drive/MyDrive/skripsi/datasets/sampled_data")
     pass

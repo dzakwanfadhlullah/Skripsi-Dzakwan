@@ -1,5 +1,5 @@
 # ==========================================
-# .gitignore — Skripsi YOLOv8 Project
+# .gitignore — Proyek Deteksi Wajah YOLOv8
 # ==========================================
 
 # --- Python ---
@@ -10,72 +10,72 @@ __pycache__/
 venv/
 env/
 
-# --- Dataset (BESAR, ~28K files) ---
+# --- Dataset ---
 datasets/
 
-# --- Model Weights (file besar) ---
+# --- Bobot Model ---
 *.pt
 *.pth
 *.onnx
 *.engine
 
-# --- Training Runs / Output Model ---
+# --- Hasil Pelatihan Model ---
 runs/
 
-# --- ALL evaluation output ---
+# --- Hasil Evaluasi ---
 evaluation_results/
 
-# --- Temp files ---
+# --- Berkas Sementara ---
 .tmp.drivedownload/
 .tmp.driveupload/
 *.tmp
 
-# --- PDF & Document files ---
+# --- Berkas PDF & Dokumen ---
 *.pdf
 *.docx
 
-# --- OS files ---
+# --- Sistem Operasi ---
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# --- IDE / Editor ---
+# --- Konfigurasi IDE / Editor ---
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# --- a  ---
+# --- Konfigurasi Lingkungan ---
 .gemini/
 
-# --- Md ---
+# --- Berkas Markdown ---
 *.md
 
-# --- S ---
+# --- Folder Draft Skripsi ---
 Skripsi/
 
-# --- Drawio diagrams ---
+# --- Diagram ---
 *.drawio
 
-# --- Large lampiran images ---
+# --- Gambar Pendukung ---
 *.png
 
-# --- Old/new version experiment folders ---
+# --- Folder Eksperimen Versi Lama/Baru ---
 version_old/
 version_new/
 
-# --- Darkface audit preview images ---
+# --- Folder Preview Audit ---
 darkface_audit_preview/
 
-# --- Pyright config ---
+# --- Konfigurasi Pyright ---
 pyrightconfig.json
 
-# --- Autos ---
+# --- Berkas Catatan Hasil Program ---
 implementation.txt
 dataset.txt
 lampiran_*.txt
 
-# --- Gen ---
+# --- Skrip Otomasi dan Pelaporan ---
 generate_lampiran2.py
 generate_lampiran4.py
 generate_report.py

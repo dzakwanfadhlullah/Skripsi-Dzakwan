@@ -10,7 +10,7 @@ from ultralytics import YOLO
 
 # ==================== KONFIGURASI ====================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATASET_DIR = os.path.join(BASE_DIR, "datasets", "skripshit_yolo")
+DATASET_DIR = os.path.join(BASE_DIR, "datasets", "skripsi_yolo")
 VAL_LOWLIGHT = os.path.join(DATASET_DIR, "images", "val_lowlight")
 VAL_NORMAL = os.path.join(DATASET_DIR, "images", "val")
 LABEL_DIR = os.path.join(DATASET_DIR, "labels", "val")

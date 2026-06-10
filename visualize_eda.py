@@ -42,5 +42,5 @@ def visualize_sample(image_dir, label_dir, num_samples=3):
     plt.show()
 
 if __name__ == "__main__":
-    # visualize_sample("datasets/skripshit_yolo/images/train", "datasets/skripshit_yolo/labels/train")
+    # visualize_sample("datasets/skripsi_yolo/images/train", "datasets/skripsi_yolo/labels/train")
     pass
