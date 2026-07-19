@@ -1,6 +1,7 @@
+# Pipeline 11: latih model augmented.
 from ultralytics import YOLO
 
-from audit_dataset import audit_augmented_dataset
+from scripts.audit_dataset_09 import audit_augmented_dataset
 from project_config import (
     AUGMENTED_DATA_YAML,
     AUGMENTED_RUN_NAME,

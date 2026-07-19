@@ -9,7 +9,7 @@ leaky workflow is not used again by accident.
 
 def main() -> None:
     raise SystemExit(
-        "split_val.py sudah deprecated. Gunakan split resmi melalui organize_yolo.py "
+        "split_val.py sudah deprecated. Gunakan split resmi melalui organize_yolo_03.py "
         "dan jangan lakukan random split lagi."
     )
 

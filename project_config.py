@@ -25,11 +25,14 @@ DARK_CLEAN_DIR = EXPERIMENT_DATASETS_DIR / "dark_face_clean"
 RUNS_DIR = ROOT_DIR / "runs" / "detect"
 EVAL_RESULTS_DIR = ROOT_DIR / "evaluation_results"
 
-BASELINE_DATA_YAML = ROOT_DIR / "wider_face_baseline.yaml"
-AUGMENTED_DATA_YAML = ROOT_DIR / "wider_face_augmented.yaml"
-DARKFACE_DATA_YAML = ROOT_DIR / "darkface_eval.yaml"
+CONFIGS_DIR = ROOT_DIR / "configs"
+MODELS_DIR = ROOT_DIR / "models"
 
-DEFAULT_MODEL_VARIANT = "yolov8n.pt"
+BASELINE_DATA_YAML = CONFIGS_DIR / "wider_face_baseline.yaml"
+AUGMENTED_DATA_YAML = CONFIGS_DIR / "wider_face_augmented.yaml"
+DARKFACE_DATA_YAML = CONFIGS_DIR / "darkface_eval.yaml"
+
+DEFAULT_MODEL_VARIANT = str(MODELS_DIR / "yolov8n.pt")
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
 OFFICIAL_SPLITS = {
@@ -62,13 +65,13 @@ EXPECTED_SPLITS = {
     "dark_face": OFFICIAL_SPLITS["dark_face"],
 }
 
-BASELINE_RUN_NAME = "yolov8n_baseline_clean"
+BASELINE_RUN_NAME = "yolov8n_baseline_clean3"
 AUGMENTED_RUN_NAME = "yolov8n_augmented_clean"
 
 # Selected runs for final evaluation/reporting.
 # Keep these explicit so eval never silently falls back to stale artifacts.
-SELECTED_BASELINE_RUN_NAME = "yolov8n_baseline_clean3"
-SELECTED_AUGMENTED_RUN_NAME = "yolov8n_augmented_clean"
+SELECTED_BASELINE_RUN_NAME = BASELINE_RUN_NAME
+SELECTED_AUGMENTED_RUN_NAME = AUGMENTED_RUN_NAME
 
 BASELINE_WEIGHTS = RUNS_DIR / SELECTED_BASELINE_RUN_NAME / "weights" / "best.pt"
 AUGMENTED_WEIGHTS = RUNS_DIR / SELECTED_AUGMENTED_RUN_NAME / "weights" / "best.pt"

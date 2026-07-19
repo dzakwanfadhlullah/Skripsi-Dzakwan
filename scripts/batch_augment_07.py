@@ -1,3 +1,4 @@
+# Pipeline 07: bentuk dataset training augmented.
 """
 Build a leakage-free augmented WIDER dataset.
 
@@ -13,7 +14,7 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-from augment_data import augment_file_to_low_light
+from scripts.augment_data_helper_05 import augment_file_to_low_light
 from project_config import IMAGE_EXTENSIONS, WIDER_AUG_DIR, WIDER_CLEAN_DIR
 
 

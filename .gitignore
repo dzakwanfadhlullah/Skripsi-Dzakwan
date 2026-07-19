@@ -28,6 +28,7 @@ evaluation_results/
 # --- Berkas Sementara ---
 .tmp.drivedownload/
 .tmp.driveupload/
+.tmp_analysis/
 *.tmp
 
 # --- Berkas PDF & Dokumen ---
@@ -50,6 +51,8 @@ desktop.ini
 
 # --- Berkas Markdown ---
 *.md
+!README.md
+!scripts/legacy/README.md
 
 # --- Folder Draft Skripsi ---
 Skripsi/
@@ -76,6 +79,6 @@ dataset.txt
 lampiran_*.txt
 
 # --- Skrip Otomasi dan Pelaporan ---
-generate_lampiran2.py
-generate_lampiran4.py
-generate_report.py
+/generate_lampiran2.py
+/generate_lampiran4.py
+/generate_report.py

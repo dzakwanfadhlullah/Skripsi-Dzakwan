@@ -1,3 +1,4 @@
+# Pipeline 01: download dataset mentah.
 """
 Download raw Kaggle sources into datasets/raw for the clean experiment pipeline.
 
@@ -35,7 +36,7 @@ DATASET_SOURCES = {
         DARK_KAGGLE_DATASET,
         DARK_RAW_DIR,
         [
-            "Periksa lagi struktur hasil unduhan Dark Face sebelum menjalankan `organize_yolo.py`.",
+            "Periksa lagi struktur hasil unduhan Dark Face sebelum menjalankan `organize_yolo_03.py`.",
             "Jika label YOLO dan manifest split belum ada, siapkan dulu sesuai protokol skripsi final.",
         ],
     ),
@@ -229,7 +230,7 @@ def main() -> None:
 
     print(
         "\nUnduhan selesai. Jangan langsung training. "
-        "Pastikan split resmi dan label YOLO sudah valid sebelum menjalankan organize_yolo.py."
+        "Pastikan split resmi dan label YOLO sudah valid sebelum menjalankan organize_yolo_03.py."
     )
 
 

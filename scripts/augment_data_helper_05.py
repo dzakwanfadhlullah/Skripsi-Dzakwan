@@ -1,3 +1,4 @@
+# Pipeline 05 (helper): fungsi transformasi low-light.
 import cv2
 import numpy as np
 from pathlib import Path

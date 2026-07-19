@@ -1,3 +1,4 @@
+# Pipeline 12: evaluasi robustness seluruh skenario.
 """
 Evaluate leakage-free robustness on WIDER test, synthetic WIDER test_lowlight,
 and optional Dark Face test.
@@ -11,7 +12,7 @@ import tempfile
 import yaml
 from ultralytics import YOLO
 
-from audit_dataset import run_full_audit
+from scripts.audit_dataset_09 import run_full_audit
 from project_config import (
     AUGMENTED_WEIGHTS,
     BASELINE_WEIGHTS,

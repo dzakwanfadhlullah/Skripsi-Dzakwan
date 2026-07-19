@@ -1,3 +1,4 @@
+# Pipeline 02: konversi anotasi WIDER FACE ke format YOLO.
 """
 Convert official WIDER FACE annotations into a YOLO-style dataset.
 

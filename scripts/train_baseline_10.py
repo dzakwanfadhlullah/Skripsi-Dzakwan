@@ -1,6 +1,7 @@
+# Pipeline 10: latih model baseline.
 from ultralytics import YOLO
 
-from audit_dataset import audit_clean_dataset
+from scripts.audit_dataset_09 import audit_clean_dataset
 from project_config import (
     BASELINE_DATA_YAML,
     BASELINE_RUN_NAME,

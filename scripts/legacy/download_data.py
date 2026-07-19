@@ -1,5 +1,5 @@
 """Backward-compatible wrapper for the new raw dataset downloader."""
-from download_raw_datasets import main
+from scripts.download_raw_datasets_01 import main
 
 
 if __name__ == "__main__":
