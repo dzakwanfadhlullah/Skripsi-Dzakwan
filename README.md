@@ -1,4 +1,4 @@
-# Analisis Robustness Deteksi Wajah pada Kondisi Pencahayaan Rendah Menggunakan Pendekatan Data Augmentation dan YOLOv8
+# Analisis Robustness Deteksi Wajah pada Kondisi Pencahayaan Rendah Menggunakan Data Augmentation dan YOLOv8n
 
 > **Status judul:** judul di atas masih mengikuti naskah skripsi saat ini. Usulan revisi yang belum ditetapkan adalah **“Analisis Pengaruh Augmentasi Low-Light terhadap Kinerja Deteksi Wajah Menggunakan YOLOv8n.”**
 
